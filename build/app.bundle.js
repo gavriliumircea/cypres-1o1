@@ -31569,12 +31569,20 @@ var TodoApp = function (_Component) {
     var _this = _possibleConstructorReturn(this, (TodoApp.__proto__ || Object.getPrototypeOf(TodoApp)).call(this, props));
 
     _this.state = {
+      currentTodo: '',
       todos: []
     };
+
+    _this.handleToDoChange = _this.handleToDoChange.bind(_this);
     return _this;
   }
 
   _createClass(TodoApp, [{
+    key: 'handleToDoChange',
+    value: function handleToDoChange(ev) {
+      this.setState({ currentTodo: ev.target.value });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -31591,7 +31599,7 @@ var TodoApp = function (_Component) {
               null,
               'todos'
             ),
-            _react2.default.createElement(_TodoForm2.default, null)
+            _react2.default.createElement(_TodoForm2.default, { currentTodo: this.state.currentTodo, onChangeHandler: this.handleToDoChange })
           ),
           _react2.default.createElement(
             'section',
@@ -34533,6 +34541,9 @@ exports.default = function (props) {
     null,
     _react2.default.createElement('input', {
       type: 'text',
+      autoFocus: true,
+      value: props.currentTodo,
+      onChange: props.onChangeHandler,
       className: 'new-todo',
       placeholder: 'What needs to be done?' })
   );

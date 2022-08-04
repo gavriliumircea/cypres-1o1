@@ -10,11 +10,16 @@ export default class TodoApp extends Component {
     super(props)
 
     this.state = {
+      currentTodo: '',
       todos: []
     }
+
+    this.handleToDoChange = this.handleToDoChange.bind(this);
   }
 
-
+  handleToDoChange (ev) {
+    this.setState({currentTodo: ev.target.value})
+  } 
 
   render () {
     return (
@@ -22,7 +27,7 @@ export default class TodoApp extends Component {
         <div>
           <header className="header">
             <h1>todos</h1>
-            <TodoForm />
+            <TodoForm  currentTodo={this.state.currentTodo} onChangeHandler={this.handleToDoChange} />
           </header>
           <section className="main">
             <TodoList todos={this.state.todos} />
