@@ -32414,6 +32414,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(1);
@@ -32435,6 +32437,8 @@ var _Footer = __webpack_require__(77);
 var _Footer2 = _interopRequireDefault(_Footer);
 
 var _service = __webpack_require__(78);
+
+var _utils = __webpack_require__(101);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32460,6 +32464,7 @@ var TodoApp = function (_Component) {
     _this.handleToDoChange = _this.handleToDoChange.bind(_this);
     _this.handleTodoSubmit = _this.handleTodoSubmit.bind(_this);
     _this.handleDelete = _this.handleDelete.bind(_this);
+    _this.handleToggle = _this.handleToggle.bind(_this);
     return _this;
   }
 
@@ -32494,25 +32499,47 @@ var TodoApp = function (_Component) {
       });
     }
   }, {
+    key: 'handleToggle',
+    value: function handleToggle(id) {
+      var _this4 = this;
+
+      var targetTodo = this.state.todos.find(function (t) {
+        return t.id === id;
+      });
+      var updated = _extends({}, targetTodo, {
+        isComplete: !targetTodo.isComplete
+      });
+      (0, _service.updateTodo)(updated).then(function (_ref2) {
+        var data = _ref2.data;
+
+        var todos = _this4.state.todos.map(function (t) {
+          return t.id === data.id ? data : t;
+        });
+        _this4.setState({ todos: todos });
+      });
+    }
+  }, {
     key: 'handleTodoSubmit',
     value: function handleTodoSubmit(evt) {
-      var _this4 = this;
+      var _this5 = this;
 
       evt.preventDefault();
       var newTodo = { name: this.state.currentTodo, isComplete: false };
-      (0, _service.saveTodo)(newTodo).then(function (_ref2) {
-        var data = _ref2.data;
-        return _this4.setState({
-          todos: _this4.state.todos.concat(data),
+      (0, _service.saveTodo)(newTodo).then(function (_ref3) {
+        var data = _ref3.data;
+        return _this5.setState({
+          todos: _this5.state.todos.concat(data),
           currentTodo: ''
         });
       }).catch(function () {
-        return _this4.setState({ error: true });
+        return _this5.setState({ error: true });
       });
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this6 = this;
+
       var remaining = this.state.todos.filter(function (t) {
         return !t.isComplete;
       }).length;
@@ -32544,7 +32571,13 @@ var TodoApp = function (_Component) {
           _react2.default.createElement(
             'section',
             { className: 'main' },
-            _react2.default.createElement(_TodoList2.default, { todos: this.state.todos, handleDelete: this.handleDelete })
+            _react2.default.createElement(_reactRouterDom.Route, { path: '/:filter?', render: function render(_ref4) {
+                var match = _ref4.match;
+                return _react2.default.createElement(_TodoList2.default, {
+                  todos: (0, _utils.filterTodos)(match.params.filter, _this6.state.todos),
+                  handleDelete: _this6.handleDelete,
+                  handleToggle: _this6.handleToggle });
+              } })
           ),
           _react2.default.createElement(_Footer2.default, { remaining: remaining })
         )
@@ -35515,7 +35548,9 @@ var TodoItem = function TodoItem(props) {
     _react2.default.createElement(
       "div",
       { className: "view" },
-      _react2.default.createElement("input", { className: "toggle", type: "checkbox", checked: props.isComplete }),
+      _react2.default.createElement("input", { className: "toggle", type: "checkbox", checked: props.isComplete, onChange: function onChange() {
+          return props.handleToggle(props.id);
+        } }),
       _react2.default.createElement(
         "label",
         null,
@@ -35533,7 +35568,7 @@ exports.default = function (props) {
     "ul",
     { className: "todo-list" },
     props.todos.map(function (todo) {
-      return _react2.default.createElement(TodoItem, _extends({ key: todo.id }, todo, { handleDelete: props.handleDelete }));
+      return _react2.default.createElement(TodoItem, _extends({ key: todo.id }, todo, { handleDelete: props.handleDelete, handleToggle: props.handleToggle }));
     })
   );
 };
@@ -35569,7 +35604,8 @@ exports.default = function (props) {
         null,
         props.remaining
       ),
-      ' todos left'
+      props.remaining === 1 ? ' todo' : ' todos',
+      ' left'
     ),
     _react2.default.createElement(
       'ul',
@@ -35617,7 +35653,7 @@ exports.default = function (props) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.destroyTodo = exports.loadTodos = exports.saveTodo = undefined;
+exports.updateTodo = exports.destroyTodo = exports.loadTodos = exports.saveTodo = undefined;
 
 var _axios = __webpack_require__(79);
 
@@ -35635,6 +35671,10 @@ var loadTodos = exports.loadTodos = function loadTodos() {
 
 var destroyTodo = exports.destroyTodo = function destroyTodo(id) {
     return _axios2.default.delete('http://localhost:3030/api/todos/' + id);
+};
+
+var updateTodo = exports.updateTodo = function updateTodo(todo) {
+    return _axios2.default.put('http://localhost:3030/api/todos/' + todo.id, todo);
 };
 
 /***/ }),
@@ -37031,6 +37071,22 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var filterTodos = exports.filterTodos = function filterTodos(filter, todos) {
+  return filter ? todos.filter(function (todo) {
+    return todo.isComplete === (filter === 'completed');
+  }) : todos;
+};
 
 /***/ })
 /******/ ]);
