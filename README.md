@@ -8,3 +8,4 @@ Useful commands:
 
 - npm run dev (starting the app)
 - npm run cypress (start the test project, it is mandatory that the main project is already running)
+- npm run cypress:all(command line summary of the project, it is mandatory that the main project is already running)

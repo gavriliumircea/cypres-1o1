@@ -3797,7 +3797,7 @@ var _TodoApp = __webpack_require__(46);
 
 var _TodoApp2 = _interopRequireDefault(_TodoApp);
 
-__webpack_require__(96);
+__webpack_require__(97);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32438,7 +32438,7 @@ var _Footer2 = _interopRequireDefault(_Footer);
 
 var _service = __webpack_require__(78);
 
-var _utils = __webpack_require__(101);
+var _utils = __webpack_require__(96);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36482,10 +36482,26 @@ module.exports = function spread(callback) {
 /* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var filterTodos = exports.filterTodos = function filterTodos(filter, todos) {
+  return filter ? todos.filter(function (todo) {
+    return todo.isComplete === (filter === 'completed');
+  }) : todos;
+};
+
+/***/ }),
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(97);
+var content = __webpack_require__(98);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -36493,7 +36509,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(99)(content, options);
+var update = __webpack_require__(100)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -36510,10 +36526,10 @@ if(false) {
 }
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(98)(false);
+exports = module.exports = __webpack_require__(99)(false);
 // imports
 
 
@@ -36524,7 +36540,7 @@ exports.push([module.i, "html,\nbody {\n\tmargin: 0;\n\tpadding: 0;\n}\n\nbutton
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports) {
 
 /*
@@ -36606,7 +36622,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -36662,7 +36678,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(100);
+var	fixUrls = __webpack_require__(101);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -36978,7 +36994,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports) {
 
 
@@ -37071,22 +37087,6 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
-
-/***/ }),
-/* 101 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var filterTodos = exports.filterTodos = function filterTodos(filter, todos) {
-  return filter ? todos.filter(function (todo) {
-    return todo.isComplete === (filter === 'completed');
-  }) : todos;
-};
 
 /***/ })
 /******/ ]);
