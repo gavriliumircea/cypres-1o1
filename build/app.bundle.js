@@ -32459,7 +32459,7 @@ var TodoApp = function (_Component) {
 
     _this.handleToDoChange = _this.handleToDoChange.bind(_this);
     _this.handleTodoSubmit = _this.handleTodoSubmit.bind(_this);
-
+    _this.handleDelete = _this.handleDelete.bind(_this);
     return _this;
   }
 
@@ -32481,25 +32481,41 @@ var TodoApp = function (_Component) {
       this.setState({ currentTodo: ev.target.value });
     }
   }, {
+    key: 'handleDelete',
+    value: function handleDelete(id) {
+      var _this3 = this;
+
+      (0, _service.destroyTodo)(id).then(function () {
+        return _this3.setState({
+          todos: _this3.state.todos.filter(function (t) {
+            return t.id !== id;
+          })
+        });
+      });
+    }
+  }, {
     key: 'handleTodoSubmit',
     value: function handleTodoSubmit(evt) {
-      var _this3 = this;
+      var _this4 = this;
 
       evt.preventDefault();
       var newTodo = { name: this.state.currentTodo, isComplete: false };
       (0, _service.saveTodo)(newTodo).then(function (_ref2) {
         var data = _ref2.data;
-        return _this3.setState({
-          todos: _this3.state.todos.concat(data),
+        return _this4.setState({
+          todos: _this4.state.todos.concat(data),
           currentTodo: ''
         });
       }).catch(function () {
-        return _this3.setState({ error: true });
+        return _this4.setState({ error: true });
       });
     }
   }, {
     key: 'render',
     value: function render() {
+      var remaining = this.state.todos.filter(function (t) {
+        return !t.isComplete;
+      }).length;
       return _react2.default.createElement(
         _reactRouterDom.BrowserRouter,
         null,
@@ -32528,9 +32544,9 @@ var TodoApp = function (_Component) {
           _react2.default.createElement(
             'section',
             { className: 'main' },
-            _react2.default.createElement(_TodoList2.default, { todos: this.state.todos })
+            _react2.default.createElement(_TodoList2.default, { todos: this.state.todos, handleDelete: this.handleDelete })
           ),
-          _react2.default.createElement(_Footer2.default, null)
+          _react2.default.createElement(_Footer2.default, { remaining: remaining })
         )
       );
     }
@@ -35495,17 +35511,19 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var TodoItem = function TodoItem(props) {
   return _react2.default.createElement(
     "li",
-    null,
+    { className: props.isComplete ? "completed" : null },
     _react2.default.createElement(
       "div",
       { className: "view" },
-      _react2.default.createElement("input", { className: "toggle", type: "checkbox" }),
+      _react2.default.createElement("input", { className: "toggle", type: "checkbox", checked: props.isComplete }),
       _react2.default.createElement(
         "label",
         null,
         props.name
       ),
-      _react2.default.createElement("button", { className: "destroy" })
+      _react2.default.createElement("button", { className: "destroy", onClick: function onClick() {
+          return props.handleDelete(props.id);
+        } })
     )
   );
 };
@@ -35515,7 +35533,7 @@ exports.default = function (props) {
     "ul",
     { className: "todo-list" },
     props.todos.map(function (todo) {
-      return _react2.default.createElement(TodoItem, _extends({ key: todo.id }, todo));
+      return _react2.default.createElement(TodoItem, _extends({ key: todo.id }, todo, { handleDelete: props.handleDelete }));
     })
   );
 };
@@ -35549,7 +35567,7 @@ exports.default = function (props) {
       _react2.default.createElement(
         'strong',
         null,
-        '0'
+        props.remaining
       ),
       ' todos left'
     ),
@@ -35599,7 +35617,7 @@ exports.default = function (props) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.loadTodos = exports.saveTodo = undefined;
+exports.destroyTodo = exports.loadTodos = exports.saveTodo = undefined;
 
 var _axios = __webpack_require__(79);
 
@@ -35613,6 +35631,10 @@ var saveTodo = exports.saveTodo = function saveTodo(todo) {
 
 var loadTodos = exports.loadTodos = function loadTodos() {
     return _axios2.default.get('http://localhost:3030/api/todos');
+};
+
+var destroyTodo = exports.destroyTodo = function destroyTodo(id) {
+    return _axios2.default.delete('http://localhost:3030/api/todos/' + id);
 };
 
 /***/ }),
