@@ -4,7 +4,7 @@ import TodoForm from './TodoForm'
 import TodoList from './TodoList'
 import Footer from './Footer'
 
-import {saveTodo} from '../lib/service'
+import {saveTodo, loadTodos} from '../lib/service'
 
 
 
@@ -20,6 +20,12 @@ export default class TodoApp extends Component {
     this.handleToDoChange = this.handleToDoChange.bind(this)
     this.handleTodoSubmit = this.handleTodoSubmit.bind(this)
 
+  }
+
+  componentDidMount () {
+    loadTodos()
+      .then(({data}) => this.setState({todos: data}))
+      .catch(() => this.setState({error: true}))
   }
 
   handleToDoChange (ev) {

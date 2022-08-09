@@ -4,7 +4,8 @@ describe('Input form', () => {
     //executes before each test
     beforeEach(() => {
         //access the website baseUrlspecified in the cypress.json
-        cy.visit('/')
+        //cy.visit('/')
+        cy.seedAndVisit([])
     })
 
     it('focuses on load', () => {
